@@ -26,7 +26,7 @@ const paddleWidth = 12;
 const paddleHeight = 90;
 const ballSize = 8;
 
-const player = {
+let player = {
     x: 20,
     y: canvas.height / 2 - paddleHeight / 2,
     width: paddleWidth,
@@ -35,7 +35,7 @@ const player = {
     velocityY: 0
 };
 
-const computer = {
+let computer = {
     x: canvas.width - 32,
     y: canvas.height / 2 - paddleHeight / 2,
     width: paddleWidth,
@@ -43,7 +43,7 @@ const computer = {
     speed: 3
 };
 
-const ball = {
+let ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     dx: 4,
@@ -57,7 +57,7 @@ let difficulty = 'medium';
 let isPaused = false;
 let gameActive = false;
 let cursorLocked = true;
-let gameLoopRunning = false;
+let animationId = null;
 
 const difficultyLevels = {
     easy: { speed: 1.5, zone: 120 },
@@ -73,14 +73,7 @@ continueBtn.addEventListener('click', startGame);
 settingsBtn.addEventListener('click', () => showScreen(settingsScreen));
 backBtn.addEventListener('click', () => showScreen(startScreen));
 playAgainBtn.addEventListener('click', resetGame);
-menuBtn.addEventListener('click', () => {
-    playerScore = 0;
-    computerScore = 0;
-    document.getElementById('playerScore').textContent = '0';
-    document.getElementById('computerScore').textContent = '0';
-    gameActive = false;
-    showScreen(startScreen);
-});
+menuBtn.addEventListener('click', goToMenu);
 
 settingsEasyBtn.addEventListener('click', () => setSetting('easy'));
 settingsMediumBtn.addEventListener('click', () => setSetting('medium'));
@@ -89,7 +82,8 @@ settingsHardBtn.addEventListener('click', () => setSetting('hard'));
 document.addEventListener('keydown', (e) => {
     if (e.key === ' ') {
         e.preventDefault();
-        if (gameActive) togglePause();
+        if (gameActive && !isPaused) togglePause();
+        else if (gameActive && isPaused) togglePause();
     }
     if (e.key === 'Shift') {
         e.preventDefault();
@@ -154,42 +148,69 @@ function updateCursorIndicator() {
 }
 
 function startGame() {
+    // Reset everything
     playerScore = 0;
     computerScore = 0;
+    isPaused = false;
+    cursorLocked = true;
+    
     document.getElementById('playerScore').textContent = '0';
     document.getElementById('computerScore').textContent = '0';
-    resetBall();
-    // Reset paddles to center
+    
+    // Reset paddles
     player.y = canvas.height / 2 - paddleHeight / 2;
     computer.y = canvas.height / 2 - paddleHeight / 2;
+    
+    resetBall();
+    
     showScreen(gameScreen);
     gameActive = true;
-    cursorLocked = true;
     updateCursorIndicator();
     document.getElementById('difficultyDisplay').textContent = difficulty.toUpperCase();
-    if (!gameLoopRunning) {
-        gameLoopRunning = true;
-        gameLoop();
-    }
+    
+    // Stop any existing animation
+    if (animationId) cancelAnimationFrame(animationId);
+    gameLoop();
 }
 
 function resetGame() {
+    // Reset everything
+    playerScore = 0;
+    computerScore = 0;
+    isPaused = false;
+    pauseOverlay.classList.remove('active');
+    cursorLocked = true;
+    
+    document.getElementById('playerScore').textContent = '0';
+    document.getElementById('computerScore').textContent = '0';
+    
+    // Reset paddles
+    player.y = canvas.height / 2 - paddleHeight / 2;
+    computer.y = canvas.height / 2 - paddleHeight / 2;
+    
+    resetBall();
+    
+    showScreen(gameScreen);
+    gameActive = true;
+    updateCursorIndicator();
+    
+    // Stop any existing animation
+    if (animationId) cancelAnimationFrame(animationId);
+    gameLoop();
+}
+
+function goToMenu() {
+    gameActive = false;
+    isPaused = false;
+    if (animationId) cancelAnimationFrame(animationId);
+    
     playerScore = 0;
     computerScore = 0;
     document.getElementById('playerScore').textContent = '0';
     document.getElementById('computerScore').textContent = '0';
-    resetBall();
-    // Reset paddles to center
-    player.y = canvas.height / 2 - paddleHeight / 2;
-    computer.y = canvas.height / 2 - paddleHeight / 2;
-    showScreen(gameScreen);
-    gameActive = true;
-    cursorLocked = true;
-    updateCursorIndicator();
-    if (!gameLoopRunning) {
-        gameLoopRunning = true;
-        gameLoop();
-    }
+    
+    pauseOverlay.classList.remove('active');
+    showScreen(startScreen);
 }
 
 function togglePause() {
@@ -360,7 +381,9 @@ function gameLoop() {
     drawPaddle(computer, false);
     drawBall();
 
-    requestAnimationFrame(gameLoop);
+    if (gameActive) {
+        animationId = requestAnimationFrame(gameLoop);
+    }
 }
 
 // Initialize
