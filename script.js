@@ -56,7 +56,7 @@ let computerScore = 0;
 let difficulty = 'medium';
 let isPaused = false;
 let gameActive = false;
-let cursorLocked = true; // Mouse is locked to paddle by default
+let cursorLocked = true;
 
 const difficultyLevels = {
     easy: { speed: 1.5, zone: 120 },
@@ -66,12 +66,6 @@ const difficultyLevels = {
 
 const keys = {};
 let mouseY = canvas.height / 2;
-let canvasRect = canvas.getBoundingClientRect();
-
-// Update canvas rect on window resize
-window.addEventListener('resize', () => {
-    canvasRect = canvas.getBoundingClientRect();
-});
 
 // Event Listeners
 continueBtn.addEventListener('click', startGame);
@@ -110,13 +104,12 @@ document.addEventListener('keyup', (e) => {
 });
 
 canvas.addEventListener('mousemove', (e) => {
-    canvasRect = canvas.getBoundingClientRect();
-    let rawMouseY = e.clientY - canvasRect.top;
+    const rect = canvas.getBoundingClientRect();
+    let rawMouseY = e.clientY - rect.top;
     
     if (cursorLocked) {
-        // Bound mouse to canvas area
-        if (rawMouseY < 0) rawMouseY = 0;
-        if (rawMouseY > canvas.height) rawMouseY = canvas.height;
+        // STRICTLY bound to canvas - clamp the value
+        rawMouseY = Math.max(0, Math.min(rawMouseY, canvas.height));
     }
     
     mouseY = rawMouseY;
@@ -191,11 +184,12 @@ function togglePause() {
 }
 
 function updatePlayer() {
-    // Mouse control (only if locked)
+    // Mouse control (locked to canvas)
     if (cursorLocked) {
-        if (mouseY - paddleHeight / 2 > 0 && mouseY + paddleHeight / 2 < canvas.height) {
-            player.y = mouseY - paddleHeight / 2;
-        }
+        // Clamp paddle position so it can't go outside bounds
+        let targetY = mouseY - paddleHeight / 2;
+        targetY = Math.max(0, Math.min(targetY, canvas.height - paddleHeight));
+        player.y = targetY;
     }
     
     // Keyboard control with smooth movement
