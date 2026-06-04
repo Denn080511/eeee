@@ -81,6 +81,8 @@ playAgainBtn.addEventListener('click', resetGame);
 menuBtn.addEventListener('click', () => {
     playerScore = 0;
     computerScore = 0;
+    document.getElementById('playerScore').textContent = '0';
+    document.getElementById('computerScore').textContent = '0';
     showScreen(startScreen);
 });
 
@@ -127,6 +129,7 @@ function showScreen(screen) {
 
 function setSetting(level) {
     difficulty = level;
+    computer.speed = difficultyLevels[level].speed;
     settingsEasyBtn.classList.remove('active');
     settingsMediumBtn.classList.remove('active');
     settingsHardBtn.classList.remove('active');
@@ -159,6 +162,8 @@ function updateCursorIndicator() {
 function startGame() {
     playerScore = 0;
     computerScore = 0;
+    document.getElementById('playerScore').textContent = '0';
+    document.getElementById('computerScore').textContent = '0';
     resetBall();
     showScreen(gameScreen);
     gameActive = true;
@@ -171,6 +176,8 @@ function startGame() {
 function resetGame() {
     playerScore = 0;
     computerScore = 0;
+    document.getElementById('playerScore').textContent = '0';
+    document.getElementById('computerScore').textContent = '0';
     resetBall();
     showScreen(gameScreen);
     gameActive = true;
