@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="startScreen" class="screen active">
+        <div class="start-container">
+            <h1>PONG GAME</h1>
+            <p>Challenge the computer!</p>
+            <button id="continueBtn" class="start-btn">CONTINUE</button>
+            <button id="settingsBtn" class="start-btn">SETTINGS</button>
+        </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settingsScreen" class="screen">
+        <div class="settings-container">
+            <h1>SETTINGS</h1>
+            
+            <div class="setting-item">
+                <label>Difficulty:</label>
+                <div class="difficulty-buttons">
+                    <button id="settingsEasyBtn" class="setting-difficulty-btn">EASY</button>
+                    <button id="settingsMediumBtn" class="setting-difficulty-btn active">MEDIUM</button>
+                    <button id="settingsHardBtn" class="setting-difficulty-btn">HARD</button>
+                </div>
+                <p id="difficultyInfo">AI Speed: Slow</p>
+            </div>
+
+            <button id="backBtn" class="start-btn">BACK</button>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+        <div class="container">
+            <h1>PONG GAME</h1>
+            
+            <div class="scoreboard">
+                <div class="score">
+                    <h2>Player</h2>
+                    <p id="playerScore">0</p>
+                </div>
+                <div class="difficulty-display" id="difficultyDisplay">MEDIUM</div>
+                <div class="score">
+                    <h2>Computer</h2>
+                    <p id="computerScore">0</p>
+                </div>
+            </div>
+            
+            <canvas id="pongCanvas" width="800" height="400"></canvas>
+            
+            <div class="instructions">
+                <p><strong>Controls:</strong> Move mouse up/down or use Arrow Keys (↑/↓)</p>
+                <p><strong>Goal:</strong> First to 11 points wins (must win by 2)!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pause Overlay -->
+    <div id="pauseOverlay" class="pause-overlay">
+        <div class="pause-message">PAUSED</div>
+        <p>Press SPACE to continue</p>
+    </div>
+
+    <!-- Win/Loss Screen -->
+    <div id="resultScreen" class="screen">
+        <div class="result-container">
+            <h1 id="resultText"></h1>
+            <p id="resultScore"></p>
+            <button id="playAgainBtn" class="start-btn">PLAY AGAIN</button>
+            <button id="menuBtn" class="start-btn">MENU</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
