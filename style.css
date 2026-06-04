@@ -1,0 +1,255 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: Arial, sans-serif;
+}
+
+.screen {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* Start Screen */
+.start-container, .settings-container, .result-container {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 50px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+}
+
+.start-container h1, .settings-container h1, .result-container h1 {
+    color: #00ff88;
+    margin-bottom: 20px;
+    font-size: 3em;
+    text-shadow: 0 0 15px #00ff88;
+    letter-spacing: 3px;
+}
+
+.start-container p {
+    color: #fff;
+    font-size: 1.3em;
+    margin-bottom: 40px;
+}
+
+.start-btn {
+    display: block;
+    width: 200px;
+    padding: 15px 30px;
+    margin: 15px auto;
+    border: 2px solid #00ff88;
+    background: transparent;
+    color: #00ff88;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.start-btn:hover {
+    background: #00ff88;
+    color: #000;
+    transform: scale(1.05);
+}
+
+/* Settings Screen */
+.setting-item {
+    margin: 30px 0;
+    padding: 20px;
+    background: rgba(0, 255, 136, 0.1);
+    border: 2px solid #00ff88;
+    border-radius: 10px;
+}
+
+.setting-item label {
+    color: #00ff88;
+    font-size: 1.2em;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.difficulty-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.setting-difficulty-btn {
+    padding: 10px 20px;
+    border: 2px solid #00ff88;
+    background: transparent;
+    color: #00ff88;
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.setting-difficulty-btn:hover {
+    background: #00ff88;
+    color: #000;
+    transform: scale(1.05);
+}
+
+.setting-difficulty-btn.active {
+    background: #00ff88;
+    color: #000;
+    box-shadow: 0 0 15px #00ff88;
+}
+
+#difficultyInfo {
+    color: #fff;
+    font-size: 0.95em;
+}
+
+/* Game Screen */
+.container {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+}
+
+.container h1 {
+    color: #00ff88;
+    margin-bottom: 15px;
+    font-size: 2.5em;
+    text-shadow: 0 0 15px #00ff88;
+    letter-spacing: 3px;
+}
+
+.scoreboard {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 30px;
+}
+
+.score {
+    background: rgba(0, 255, 136, 0.15);
+    padding: 15px 30px;
+    border-radius: 10px;
+    border: 2px solid #00ff88;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+    flex: 1;
+}
+
+.score h2 {
+    color: #00ff88;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+.score p {
+    color: #fff;
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+.difficulty-display {
+    background: rgba(255, 102, 0, 0.2);
+    padding: 15px 25px;
+    border-radius: 10px;
+    border: 2px solid #ff6600;
+    color: #ff6600;
+    font-weight: bold;
+    font-size: 0.95em;
+}
+
+#pongCanvas {
+    display: block;
+    background: #1a1a1a;
+    border: 3px solid #00ff88;
+    margin: 20px auto;
+    cursor: none;
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+    border-radius: 5px;
+}
+
+.instructions {
+    color: #00ff88;
+    font-size: 0.85em;
+    margin-top: 15px;
+    line-height: 1.6;
+}
+
+.instructions p {
+    margin: 5px 0;
+}
+
+.instructions strong {
+    color: #fff;
+}
+
+/* Pause Overlay */
+.pause-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    flex-direction: column;
+}
+
+.pause-overlay.active {
+    display: flex;
+}
+
+.pause-message {
+    font-size: 4em;
+    color: #00ff88;
+    font-weight: bold;
+    margin-bottom: 20px;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.pause-overlay p {
+    color: #fff;
+    font-size: 1.2em;
+}
+
+/* Result Screen */
+.result-container h1 {
+    font-size: 4em;
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+
+#resultScore {
+    font-size: 1.5em;
+    margin-bottom: 30px;
+    color: #fff;
+}
