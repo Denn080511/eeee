@@ -57,6 +57,7 @@ let difficulty = 'medium';
 let isPaused = false;
 let gameActive = false;
 let cursorLocked = true;
+let gameLoopRunning = false;
 
 const difficultyLevels = {
     easy: { speed: 1.5, zone: 120 },
@@ -77,6 +78,7 @@ menuBtn.addEventListener('click', () => {
     computerScore = 0;
     document.getElementById('playerScore').textContent = '0';
     document.getElementById('computerScore').textContent = '0';
+    gameActive = false;
     showScreen(startScreen);
 });
 
@@ -108,7 +110,6 @@ canvas.addEventListener('mousemove', (e) => {
     let rawMouseY = e.clientY - rect.top;
     
     if (cursorLocked) {
-        // STRICTLY bound to canvas - clamp the value
         rawMouseY = Math.max(0, Math.min(rawMouseY, canvas.height));
     }
     
@@ -158,12 +159,18 @@ function startGame() {
     document.getElementById('playerScore').textContent = '0';
     document.getElementById('computerScore').textContent = '0';
     resetBall();
+    // Reset paddles to center
+    player.y = canvas.height / 2 - paddleHeight / 2;
+    computer.y = canvas.height / 2 - paddleHeight / 2;
     showScreen(gameScreen);
     gameActive = true;
     cursorLocked = true;
     updateCursorIndicator();
     document.getElementById('difficultyDisplay').textContent = difficulty.toUpperCase();
-    gameLoop();
+    if (!gameLoopRunning) {
+        gameLoopRunning = true;
+        gameLoop();
+    }
 }
 
 function resetGame() {
@@ -172,10 +179,17 @@ function resetGame() {
     document.getElementById('playerScore').textContent = '0';
     document.getElementById('computerScore').textContent = '0';
     resetBall();
+    // Reset paddles to center
+    player.y = canvas.height / 2 - paddleHeight / 2;
+    computer.y = canvas.height / 2 - paddleHeight / 2;
     showScreen(gameScreen);
     gameActive = true;
     cursorLocked = true;
     updateCursorIndicator();
+    if (!gameLoopRunning) {
+        gameLoopRunning = true;
+        gameLoop();
+    }
 }
 
 function togglePause() {
@@ -186,7 +200,6 @@ function togglePause() {
 function updatePlayer() {
     // Mouse control (locked to canvas)
     if (cursorLocked) {
-        // Clamp paddle position so it can't go outside bounds
         let targetY = mouseY - paddleHeight / 2;
         targetY = Math.max(0, Math.min(targetY, canvas.height - paddleHeight));
         player.y = targetY;
@@ -347,11 +360,8 @@ function gameLoop() {
     drawPaddle(computer, false);
     drawBall();
 
-    if (gameActive) {
-        requestAnimationFrame(gameLoop);
-    }
+    requestAnimationFrame(gameLoop);
 }
 
 // Initialize
-setDifficulty('medium');
-setDifficulty(difficulty);
+setSetting('medium');
