@@ -189,6 +189,13 @@ body {
     border-radius: 5px;
 }
 
+#cursorIndicator {
+    margin-top: 15px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #00ff88;
+}
+
 .instructions {
     color: #00ff88;
     font-size: 0.85em;

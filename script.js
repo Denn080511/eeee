@@ -56,6 +56,7 @@ let computerScore = 0;
 let difficulty = 'medium';
 let isPaused = false;
 let gameActive = false;
+let cursorLocked = true; // Mouse is locked to paddle by default
 
 const difficultyLevels = {
     easy: { speed: 1.5, zone: 120 },
@@ -65,6 +66,12 @@ const difficultyLevels = {
 
 const keys = {};
 let mouseY = canvas.height / 2;
+let canvasRect = canvas.getBoundingClientRect();
+
+// Update canvas rect on window resize
+window.addEventListener('resize', () => {
+    canvasRect = canvas.getBoundingClientRect();
+});
 
 // Event Listeners
 continueBtn.addEventListener('click', startGame);
@@ -86,6 +93,11 @@ document.addEventListener('keydown', (e) => {
         e.preventDefault();
         if (gameActive) togglePause();
     }
+    if (e.key === 'Shift') {
+        e.preventDefault();
+        cursorLocked = !cursorLocked;
+        updateCursorIndicator();
+    }
     if (e.key === 'ArrowUp') keys['ArrowUp'] = true;
     if (e.key === 'ArrowDown') keys['ArrowDown'] = true;
 });
@@ -96,8 +108,16 @@ document.addEventListener('keyup', (e) => {
 });
 
 canvas.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    mouseY = e.clientY - rect.top;
+    canvasRect = canvas.getBoundingClientRect();
+    let rawMouseY = e.clientY - canvasRect.top;
+    
+    if (cursorLocked) {
+        // Bound mouse to canvas area
+        if (rawMouseY < 0) rawMouseY = 0;
+        if (rawMouseY > canvas.height) rawMouseY = canvas.height;
+    }
+    
+    mouseY = rawMouseY;
 });
 
 function showScreen(screen) {
@@ -123,12 +143,27 @@ function setSetting(level) {
     }
 }
 
+function updateCursorIndicator() {
+    const indicator = document.getElementById('cursorIndicator');
+    if (indicator) {
+        if (cursorLocked) {
+            indicator.textContent = '🔒 Cursor Locked (Press SHIFT to unlock)';
+            indicator.style.color = '#00ff88';
+        } else {
+            indicator.textContent = '🔓 Cursor Unlocked (Press SHIFT to lock)';
+            indicator.style.color = '#ff6600';
+        }
+    }
+}
+
 function startGame() {
     playerScore = 0;
     computerScore = 0;
     resetBall();
     showScreen(gameScreen);
     gameActive = true;
+    cursorLocked = true;
+    updateCursorIndicator();
     document.getElementById('difficultyDisplay').textContent = difficulty.toUpperCase();
     gameLoop();
 }
@@ -139,6 +174,8 @@ function resetGame() {
     resetBall();
     showScreen(gameScreen);
     gameActive = true;
+    cursorLocked = true;
+    updateCursorIndicator();
 }
 
 function togglePause() {
@@ -147,9 +184,11 @@ function togglePause() {
 }
 
 function updatePlayer() {
-    // Mouse control
-    if (mouseY - paddleHeight / 2 > 0 && mouseY + paddleHeight / 2 < canvas.height) {
-        player.y = mouseY - paddleHeight / 2;
+    // Mouse control (only if locked)
+    if (cursorLocked) {
+        if (mouseY - paddleHeight / 2 > 0 && mouseY + paddleHeight / 2 < canvas.height) {
+            player.y = mouseY - paddleHeight / 2;
+        }
     }
     
     // Keyboard control with smooth movement
